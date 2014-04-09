@@ -38,6 +38,7 @@ func main() {
 	hostFile := flag.String("f", "", "Path to a newline seperated file with hosts or ips")
 	workers := flag.Int("workers", runtime.NumCPU()*10, "Number of workers to scan hosts with, only used with hostfile flag")
 	retryDelay := flag.Duration("retry", 10*time.Second, "Seconds to wait before retesting a host after an unfavorable response")
+	listen := flag.String("l", "localhost:5000", "Host:port to serve heartbleed page")
 	flag.Usage = func() {
 		fmt.Fprintf(os.Stderr, "Usage: %s [options] host[:443]\n", os.Args[0])
 		fmt.Fprintf(os.Stderr, "Options:")
@@ -46,7 +47,7 @@ func main() {
 	flag.Parse()
 
 	if *hostFile != "" {
-		checkMultiHosts(*hostFile, *timeout, *retryDelay, *workers)
+		checkMultiHosts(*hostFile, *timeout, *retryDelay, *workers, *listen)
 	} else {
 		checkSingleHost(flag.Arg(0), *timeout)
 	}
@@ -100,7 +101,7 @@ func checkHeartbeat(host string, timeout time.Duration) (int, error) {
 	return ResultTimeout, err
 }
 
-func checkMultiHosts(hostFile string, timeout, retryDelay time.Duration, numWorkers int) {
+func checkMultiHosts(hostFile string, timeout, retryDelay time.Duration, numWorkers int, listenAddr string) {
 	hosts := readHosts(hostFile)
 
 	dispatch := make(chan *Target, len(hosts))
@@ -113,10 +114,10 @@ func checkMultiHosts(hostFile string, timeout, retryDelay time.Duration, numWork
 		dispatch <- t
 	}
 
-	handleHTTP(hosts)
+	handleHTTP(hosts, listenAddr)
 }
 
-func handleHTTP(hosts []*Target) {
+func handleHTTP(hosts []*Target, listenAddr string) {
 	// I see you judging me... The bible says don't judge and stuff
 	// not that the Bible ever stopped you before...
 	t, _ := template.New("foo").Parse(`<td>{{.OriginalHost}}</td><td>{{.Host}}</td><td>{{.LastChecked}}</td>`)
@@ -150,7 +151,8 @@ func handleHTTP(hosts []*Target) {
 		}
 
 	})
-	log.Fatal(http.ListenAndServe(":5779", nil))
+	log.Println("Serving Heartbleed status on", listenAddr)
+	http.ListenAndServe(listenAddr, nil)
 }
 
 func scanner(source chan *Target, timeout, retryDelay time.Duration) {
