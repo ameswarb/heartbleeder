@@ -1,0 +1,7 @@
+.container table {
+  width: 100%;
+}
+
+.host-table th, .host-table td {
+  width: 25%;
+}

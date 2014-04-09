@@ -1,0 +1,58 @@
+<h3>Stats</h3>
+<div class="row">
+    <div class="col-md-4">
+        <h4>Scan</h4>
+        <table class="table table-bordered">
+            <tr>
+                <td>Number of hosts</td>
+                <td>{{stats.host_count}}</td>
+            </tr>
+            <tr>
+                <td>Hosts scanned</td>
+                <td>{{stats.scanned_count}}</td>
+            </tr>
+        </table>
+    </div>
+    <div class="col-md-4">
+        <h4>State</h4>
+        <table class="table table-bordered">
+            <tr class="success">
+                <td>Secure</td>
+                <td>{{stats.state.secure}}</td>
+            </tr>
+            <tr class="info">
+                <td>Connection Refused</td>
+                <td>{{stats.state.connectionRefused}}</td>
+            </tr>
+            <tr class="warning">
+                <td>Timeout</td>
+                <td>{{stats.state.timeout}}</td>
+            </tr>
+            <tr class="danger">
+                <td>Vulnerable</td>
+                <td>{{stats.state.vulnerable}}</td>
+            </tr>
+            <tr class="active">
+                <td>Unknown</td>
+                <td>{{stats.state.unknown}}</td>
+            </tr>
+        </table>
+    </div>
+</div><!-- .row-fluid -->
+
+<input type="text" ng-model="tFilter"/>
+
+<table class="host-table table table-hover table-bordered">
+    <tr>
+        <th class="host-orig">Target</th>
+        <th class="host-ip">IP</th>
+        <th class="host-state">State</th>
+        <th class="host-checked">Checked</th>
+    </tr>
+    <tr ng-repeat="host in hosts | filter:tFilter" class="{{host.cssClass}}">
+        <td class="host-orig">{{host.OriginalHost}}</td>
+        <td class="host-ip">{{host.Host}}</td>
+        <td class="host-state">{{host.State}}</td>
+        <td class="host-checked">{{host.LastChecked}}</td>
+    </tr>
+</table>
