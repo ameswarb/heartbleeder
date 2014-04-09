@@ -62,8 +62,6 @@ func checkSingleHost(host string, timeout time.Duration) {
 }
 
 func checkHeartbeat(host string, timeout time.Duration) (int, error) {
-	var err error
-
 	c, err := tls.Dial("tcp", host, &tls.Config{InsecureSkipVerify: true})
 	if err != nil {
 		log.Printf("Error connecting to %s: %s\n", host, err)
@@ -212,8 +210,8 @@ func readHosts(hostFile string) []*Target {
 	}
 
 	for _, line := range strings.Split(string(contents), "\n") {
-		clean := strings.TrimSpace(line)
-		if clean == "" {
+		line := strings.TrimSpace(line)
+		if line == "" {
 			continue
 		}
 		targets = append(targets, NewTarget(line)...)
