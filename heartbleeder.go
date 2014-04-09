@@ -3,7 +3,7 @@ package main
 import (
 	"flag"
 	"fmt"
-	"html/template"
+	"encoding/json"
 	"io/ioutil"
 	"log"
 	"net"
@@ -120,37 +120,19 @@ func checkMultiHosts(hostFile string, timeout, retryDelay time.Duration, numWork
 func handleHTTP(hosts []*Target, listenAddr string) {
 	// I see you judging me... The bible says don't judge and stuff
 	// not that the Bible ever stopped you before...
-	t, _ := template.New("foo").Parse(`<td>{{.OriginalHost}}</td><td>{{.Host}}</td><td>{{.LastChecked}}</td>`)
-	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
-		if r.Method == "GET" {
-			// Look, I don't HTML or do templates much.  I regret nothing
-			fmt.Fprintf(w, `<html><header><link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css">`)
-			fmt.Fprintf(w, `<body><table class="table table-hover table-bordered">`)
-			fmt.Fprintf(w, "<p> Number of hosts %d</p>", len(hosts))
-			fmt.Fprintf(w, "<tr><th>Target</th><th>IP</th><th>Checked</th>\n")
-			var status string
-			// Everyone can hear baby jesus right now, and yes those are tears of disappointment.
-			for _, target := range hosts {
-				switch target.State {
-				case ResultSecure:
-					status = "success"
-				case ResultTimeout:
-					status = "warning"
-				case ResultVunerable:
-					status = "danger"
-				case ResultConnectionRefused:
-					status = "info"
-				default:
-					status = "active"
-				}
-				fmt.Fprintf(w, `<tr class="%s">`, status)
-				t.Execute(w, target)
-				fmt.Fprintf(w, `</tr>`)
-			}
-			fmt.Fprintf(w, "</table></body></html>\n")
-		}
+	http.HandleFunc("/api/host", func(w http.ResponseWriter, r *http.Request) {
 
+		if r.Method == "GET" {
+			w.Header().Set("Content-Type", "application/json")
+			js, err := json.Marshal(hosts)
+			if err != nil {
+			    http.Error(w, err.Error(), http.StatusInternalServerError)
+			    return
+			}
+			w.Write(js)
+		}
 	})
+	http.Handle("/", http.FileServer(http.Dir("interfaces/angular/app")))
 	log.Println("Serving Heartbleed status on", listenAddr)
 	http.ListenAndServe(listenAddr, nil)
 }
