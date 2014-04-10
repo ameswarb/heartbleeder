@@ -13,26 +13,26 @@
             </tr>
         </table>
     </div>
-    <div class="col-md-4">
+    <div class="col-md-4 state-stats">
         <h4>State</h4>
         <table class="table table-bordered">
-            <tr class="success">
+            <tr class="success" ng-click="tFilter='secure'">
                 <td>Secure</td>
                 <td>{{stats.state.secure}}</td>
             </tr>
-            <tr class="info">
+            <tr class="info" ng-click="tFilter='connectionRefused'">
                 <td>Connection Refused</td>
                 <td>{{stats.state.connectionRefused}}</td>
             </tr>
-            <tr class="warning">
+            <tr class="warning" ng-click="tFilter='timeout'">
                 <td>Timeout</td>
                 <td>{{stats.state.timeout}}</td>
             </tr>
-            <tr class="danger">
+            <tr class="danger" ng-click="tFilter='vulnerable'">
                 <td>Vulnerable</td>
                 <td>{{stats.state.vulnerable}}</td>
             </tr>
-            <tr class="active">
+            <tr class="active"  ng-click="tFilter='unknown'">
                 <td>Unknown</td>
                 <td>{{stats.state.unknown}}</td>
             </tr>
