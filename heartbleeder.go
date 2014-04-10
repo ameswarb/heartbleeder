@@ -181,6 +181,8 @@ func NewTarget(hostaddr string) []*Target {
 	// Add a target for each IP so we can get an accurate view
 	targets := make([]*Target, len(addrs))
 	for i, addr := range addrs {
+		// UUID stuff is used on the angular app so that it has a way to compare
+		// objects and see if they've changed
 		u4, err := uuid.NewV4()
 		if err != nil {
 		    fmt.Println("error:", err)
