@@ -6,6 +6,10 @@
   width: 25%;
 }
 
-.state-stats table, th a {
+.state-stats table, th a£ {
     cursor: pointer;
+}
+
+.text-filter input {
+    width: 100%;
 }

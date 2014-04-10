@@ -1,5 +1,10 @@
 <h3>Stats</h3>
 <div class="row">
+    <div class="col-md-4 text-filter">
+        <h4>Filter <small>Filters all text in table by input</small></h4>
+        <input type="text" ng-model="tFilter"/>
+        <h4><small>Empty this box to see all results</small></h4>
+    </div>
     <div class="col-md-4">
         <h4>Scan</h4>
         <table class="table table-bordered">
@@ -14,7 +19,7 @@
         </table>
     </div>
     <div class="col-md-4 state-stats">
-        <h4>State</h4>
+        <h4>State <small>Click below to filter by given state</small></h4>
         <table class="table table-bordered">
             <tr class="success" ng-click="tFilter='secure'">
                 <td>Secure</td>
@@ -39,8 +44,6 @@
         </table>
     </div>
 </div><!-- .row-fluid -->
-
-<input type="text" ng-model="tFilter"/>
 
 <table class="host-table table table-hover table-bordered">
     <tr>
