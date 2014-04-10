@@ -36,6 +36,8 @@ angular.module('angularApp', ['lodash', 'ngRoute', 'ngResource'])
     function ($scope, $timeout, Targets) {
       $scope.hosts = [];
       $scope.tFilter = 'vulnerable';
+      $scope.orderByField = 'LastChecked';
+      $scope.reverseSort = true;
       $scope.stats = {
         state: {}
       };
