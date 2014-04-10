@@ -134,7 +134,7 @@ func handleHTTP(hosts []*Target, listenAddr string) {
 			w.Write(js)
 		}
 	})
-	http.Handle("/", http.FileServer(http.Dir("interfaces/angular/app")))
+	http.Handle("/", http.FileServer(http.Dir("interfaces/angular")))
 	log.Println("Serving Heartbleed status on", listenAddr)
 	http.ListenAndServe(listenAddr, nil)
 }
