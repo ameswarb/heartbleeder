@@ -41,12 +41,19 @@ angular.module('angularApp', ['lodash', 'ngRoute', 'ngResource'])
       };
 
       (function tick() {
-        $scope.hosts = Targets.query(function () {
-          _.each($scope.hosts, function (item, index, list) {
+        var hosts = Targets.query(function () {
+          _.each(hosts, function (item, index, list) {
             if (typeof item.State === 'number') {
               var friendlyState = resultMap[item.State];
-              list[index].State = friendlyState;
-              list[index].cssClass = stateStyleMap[friendlyState];
+              item.State = friendlyState;
+              item.cssClass = stateStyleMap[friendlyState];
+            }
+            var ref = _.find($scope.hosts, { Uuid: item.Uuid });
+            if (ref) {
+              var i = $scope.hosts.indexOf(ref);
+              $scope.hosts[i] = item;
+            } else {
+              $scope.hosts.push(item);
             }
           });
           $scope.stats.host_count = $scope.hosts.length;

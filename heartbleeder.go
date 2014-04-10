@@ -13,6 +13,7 @@ import (
 	"strings"
 	"time"
 
+	"github.com/nu7hatch/gouuid"
 	"github.com/titanous/heartbleeder/tls"
 )
 
@@ -25,6 +26,7 @@ const (
 )
 
 type Target struct {
+	Uuid		 string
 	Host         string
 	OriginalHost string
 	LastChecked  *time.Time
@@ -179,7 +181,11 @@ func NewTarget(hostaddr string) []*Target {
 	// Add a target for each IP so we can get an accurate view
 	targets := make([]*Target, len(addrs))
 	for i, addr := range addrs {
-		targets[i] = &Target{Host: net.JoinHostPort(addr.String(), port), OriginalHost: hostport, State: ResultUnknown}
+		u4, err := uuid.NewV4()
+		if err != nil {
+		    fmt.Println("error:", err)
+		}
+		targets[i] = &Target{Host: net.JoinHostPort(addr.String(), port), Uuid: u4.String(), OriginalHost: hostport, State: ResultUnknown}
 	}
 	return targets
 }
